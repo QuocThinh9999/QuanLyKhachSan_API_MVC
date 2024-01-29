@@ -1,0 +1,113 @@
+﻿@model ClientQuanLyKhachSan.Models.ModelViewUser
+@{
+    ViewData["Title"] = "Lich Su Dat Phong";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/front-end/js/main.js"></script>
+<link rel="stylesheet" href="~/front-end/css/style.css">
+<section class="pay-section">
+    <div class="container">
+        <h2>Lịch Sử Đặt Phòng </h2>
+        <div class="row pay-section-main">
+            <div class="col-xl-6  table">
+                <div class="rom-detail">
+                    <h4 style="    text-align: center;; padding-bottom: 5px; font-weight: 600; color:black;">Chi Tiết Đặt Phòng</h4>
+                    <div class="row">
+                        <img src="@Model.lichSuChiTiet.UrlImages" style="aspect-ratio: 1/1; width:100%;" alt="">
+                        <div class="col">
+                            <span>Nhận phòng</span>
+                            <p class="font-black" style=" border-right: 1px solid #707079; padding-left: 3px;">@Model.lichSuChiTiet.GioCheckin.ToString("dd/MM/yyyy")</p>
+
+                        </div>
+
+                        <div class="col">
+                            <span>Trả phòng</span>
+                            <p class="font-black">@Model.lichSuChiTiet.GioCheckout.ToString("dd/MM/yyyy")</p>
+
+                        </div>
+                    </div>
+                    <p>Tổng thời gian lưu trú:</p>
+                    <p class="font-black" style="padding-bottom: 10px;
+                    border-bottom: 1px solid #707079;">@Model.lichSuChiTiet.TongNgay Ngày</p>
+                    <p style="padding-top: 7px;">Tổng tiền: <strong>@Model.lichSuChiTiet.TongTien.ToString("N0")</strong> bao gồm 8% VAT</p>
+                    <p style="padding-top: 0px;">Bạn đã chọn:</p>
+                    <p class="font-black" style="padding-bottom: 10px;">Phòng cho @Model.lichSuChiTiet.SoNguoiLon người lớn  và  @Model.lichSuChiTiet.SoTreEm trẻ em</p>
+
+
+                </div>
+            </div>
+            <div class="col-xl-6 pay-sumary">
+               @*  <form asp-controller="HoaDon" asp-action="HuyDatPhong" method="post" enctype="multipart/form-data"> *@
+                    <div class="row">
+                        <label for="ten">Tên</label>
+                        <input name="GioCheckin" value="@Model.lichSuChiTiet.GioCheckin" hidden />
+                        <input name="GioCheckout" value="@Model.lichSuChiTiet.GioCheckout" hidden />
+                        <input name="IdPhong" value="@Model.lichSuChiTiet.IdPhong" hidden />
+
+                        <input type="text" id="ten" name="ten" value="@Model.lichSuChiTiet.TenNguoiDung" readonly>
+                    </div>
+                    <div class="row">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" value="@Model.lichSuChiTiet.EmailNguoiDung" readonly>
+                    </div>
+                    <div class="row">
+                        <label for="sdt">Số điện thoại</label>
+                        <input type="text" id="sdt" name="sdt" value="@Model.lichSuChiTiet.SDTNguoiDung" readonly>
+                    </div>
+                    <div class="row">
+                        <label for="yeucau">Yêu cầu</label>
+                        <textarea id="yeucau" name="yeucau"  readonly></textarea>
+                    </div>
+                    <div class="row">
+                        @if (Model.lichSuChiTiet.TrangThai == "Chờ nhận phòng")
+
+                        {
+                            <input type="text" name="id" value="@Model.lichSuChiTiet.IdHoaDon" hidden>
+                            <button class="submit-pay" onclick="confirmDelete('@Model.lichSuChiTiet.IdHoaDon')" style="background-color: #c21912; font-weight:bold">Hủy đặt phòng</button>
+                        }
+                        else
+                        {
+                            if (Model.lichSuChiTiet.TrangThai == "Thành công")
+                            {
+                                <button class="submit-pay" disabled style="color:green;">Thành công</button>
+                            }
+                            else
+                            {
+                                <button class="submit-pay" disabled style="background-color:gray;">Đã hủy</button>
+                            }
+
+                        }
+                    </div>
+                    <div class="modal" id="myModal-@Model.lichSuChiTiet.IdHoaDon" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Xác nhận hủy</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Bạn có chắc chắn muốn hủy đặt phòng?</p>
+                                </div>
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary float-left" style="width:48%;" data-bs-dismiss="modal">Đóng</button>
+                                <a class="btn btn-primary d-inline-block float-right" style="width:48%; background-color:red;" href="@Url.Action("HuyDatPhong", "QuanLyHoaDon", new {id=Model.lichSuChiTiet.IdHoaDon })">Xác nhận</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @* </form> *@
+                
+            </div>
+
+        </div>
+    </div>
+</section>
+<script>
+    var yeucau = "@Model.lichSuChiTiet.YeuCau";
+    document.getElementById("yeucau").value = yeucau;
+</script>
+<script>
+    function confirmDelete(productId) {
+        $('#myModal-' + productId).modal('show');
+    }
+</script>

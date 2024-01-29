@@ -1,0 +1,288 @@
+﻿@model ClientQuanLyKhachSan.Models.ModelViewUser
+@{
+    ViewData["Title"] = "Danh Sach Phong";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    $(function () {
+        var selectedDate = null;
+
+        $("#hasDatepicker1").datepicker({
+            beforeShowDay: function (date) {
+                var today = new Date(); // Lấy ngày hôm nay
+                today.setHours(0, 0, 0, 0); // Đặt giờ thành 00:00:00 để bỏ qua phần giờ trong so sánh
+
+                // Đặt ngày hiện tại thành không khả dụng
+                if (date.getTime() < today.getTime()) {
+                    return [false, 'disabled-day', 'Ngày không khả dụng'];
+                }
+                return [true];
+            },
+            onSelect: function (dateText, inst) {
+                selectedDate = $(this).datepicker('getDate');
+                $("#hasDatepicker2").datepicker('option', 'beforeShowDay', function (date) {
+                    // Đặt ngày đã chọn từ hasDatepicker1 thành không khả dụng
+                    if (selectedDate && date.getTime() < selectedDate.getTime() + 1) {
+                        return [false, 'disabled-day', 'Ngày không khả dụng'];
+                    }
+                    return [true];
+                });
+            }
+        });
+
+        $("#hasDatepicker2").datepicker({
+            beforeShowDay: function (date) {
+                var today = new Date(); // Lấy ngày hôm nay
+                today.setHours(0, 0, 0, 0); // Đặt giờ thành 00:00:00 để bỏ qua phần giờ trong so sánh
+
+                // Đặt ngày hiện tại thành không khả dụng
+                if (date.getTime() < today.getTime()) {
+                    return [false, 'disabled-day', 'Ngày không khả dụng'];
+                }
+                // Đặt ngày đã chọn từ hasDatepicker1 thành không khả dụng
+                if (selectedDate && date.getTime() < selectedDate.getTime()) {
+                    return [false, 'disabled-day', 'Ngày không khả dụng'];
+                }
+                return [true];
+            }
+        });
+    });
+</script>
+<style>
+    .disabled-day {
+        color: #FFFFFF !important;
+        cursor: default !important;
+    }
+</style>
+<div class="room_section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="room_title">
+                    <h2>Danh Sách Phòng</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="row">
+                    @foreach (var item in Model.PhongTrangChus)
+                    {
+                        <div class="col-md-6 col-lg-4">
+
+                            <div class="room_item">
+                                <a href=" @Url.Action("ChiTietPhong", "Phong", new { Areas="", id=item.IdPhong })">
+                                    <img src="@item.UrlImage" style="aspect-ratio: 1/1; width:100%;" alt="">
+                                </a>
+                                
+                                <div class="room_details">
+                                    <a href=" @Url.Action("ChiTietPhong", "Phong", new { Areas="", id=item.IdPhong })">
+                                    <h3>@item.TenPhong</h3>
+                                    </a>
+                                    @if (item.GiaSauGiam == item.GiaPhong)
+                                    {
+                                        <h2 style="font-size:30px">@item.GiaPhong.ToString("N0") vnđ</h2>
+                                    }
+                                    else
+                                    {
+
+                                        <h2 style="font-size:30px">@item.GiaSauGiam.ToString("N0") vnđ <del> @item.GiaPhong.ToString("N0") vnđ</del></h2>
+                                    }
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td class="r-o">Size:</td>
+                                                <td>@item.DienTich m²</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="r-o">Số người lớn:</td>
+                                                <td>Tối đa @item.SoNguoiLon</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="r-o">Số trẻ em:</td>
+                                                <td>Tối đa @item.SoTreEm</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="r-o">Mô tả:</td>
+                                                <td>@item.MoTa</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <a href=" @Url.Action("ChiTietPhong", "Phong", new { Areas="", id=item.IdPhong })" class="primary-btn">Xem chi tiết</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+            </div>
+            <div class="col-lg-3 sidebar">
+                <div class="sidebar-wrap bg-light ">
+                    <h3 style="font-size:20px">Tìm kiếm nâng cao</h3>
+                    <div class="booking_form">
+
+                        <form asp-area="" asp-controller="Phong" asp-action="DanhSachCheckPhong" method="post" enctype="multipart/form-data">
+                            <div class="check-date">
+                                <p>Ngày vào:</p>
+                                <div class="check" style="display: flex;">
+                                    @if (Model.danhSachCheckPhong.GioCheckin.ToString() != "01/01/0001 12:00:00 AM")
+                                    {
+                                        <input type="datetime" class="date-input " id="hasDatepicker1" name="GioCheckin" value="@Model.danhSachCheckPhong.GioCheckin" readonly>
+                                    }
+                                    else
+                                    {
+                                        <input type="datetime" class="date-input " id="hasDatepicker1" name="GioCheckin" readonly>
+                                    }
+                                    <div class="icon"><i class="fa fa-calendar-week"></i></div>
+                                </div>
+                            </div>
+                            <div class="check-date">
+                                <p>Ngày ra:</p>
+                                <div class="check" style="display: flex;">
+                                    @if (Model.danhSachCheckPhong.GioCheckout.ToString() != "01/01/0001 12:00:00 AM")
+                                    {
+                                        <input type="datetime" class="date-input " id="hasDatepicker2" name="GioCheckout" value="@Model.danhSachCheckPhong.GioCheckout" readonly>
+                                    }
+                                    else
+                                    {
+                                        <input type="datetime" class="date-input " id="hasDatepicker2" name="GioCheckout"  readonly>
+                                    }
+                                    <div class="icon"><i class="fa fa-calendar-week"></i></div>
+                                </div>
+                                @if (TempData["error"] != null)
+                                {
+                                    <div style="color: red;">@TempData["error"]</div>
+                                }
+                            </div>
+                            <div class="select-option">
+                                <p>Người lớn:</p>
+                                <div class="select-item">
+                                    <button id="adult-mn" style="border: 0;"><i class="fa fa-minus"></i></button>
+                                     @if (Model.danhSachCheckPhong.SoNguoiLon != null)
+                                    {
+                                        <input id="adult-count" value="@Model.danhSachCheckPhong.SoNguoiLon" readonly style="border: none; text-align: center;
+                                    height: 40px;
+                                    width: 60%;" name="SoNguoiLon" >
+                                    }
+                                    else
+                                    {
+                                        <input id="adult-count" value="0" readonly style="border: none;text-align: center;
+                                    height: 40px;
+                                    width: 60%;" name="SoNguoiLon">
+                                    }
+
+                                   
+                                    <button id="adult-pl" style="border: 0;"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+                            <div class="select-option">
+                                <p>Trẻ em: </p>
+                                <div class="select-item">
+                                    <button id="kid-mn" style="border: 0;"><i class="fa fa-minus"></i></button>
+                                     @if (Model.danhSachCheckPhong.SoTreEm != null)
+                                    {
+                                        <input id="kid-count"  readonly style="border: none;
+                                    text-align: center;
+                                    height: 40px;
+                                    width: 60%;" name="SoTreEm" value="@Model.danhSachCheckPhong.SoTreEm">
+                                    }
+                                    else
+                                    {
+                                        <input id="kid-count" value="0" readonly style="border: none;
+                                    text-align: center;
+                                    height: 40px;
+                                    width: 60%;" name="SoTreEm">
+                                    }
+
+                                    <button id="kid-pl" style="border: 0;"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <p>Chọn giá:</p>
+                                <div class="range-slider" >
+                                    <p class="price__input">
+                                        Từ:
+                                         @if (Model.danhSachCheckPhong.GiaPhongMin != 0)
+                                        {
+                                            <input class="input-min" type="number" min="0" max="3000000" name="GiaPhongMin" value="@Model.danhSachCheckPhong.GiaPhongMin">
+                                        }
+                                        else
+                                        {
+                                            <input class="input-min" type="number" value="0" min="0" max="3000000" name="GiaPhongMin" >
+                                        }
+
+                                    </p>
+                                    <p class="price__input">
+                                        Đến:
+                                        @if (Model.danhSachCheckPhong.GiaPhongMax != 0)
+                                        {
+                                            <input class="input-max" type="number"  min="0" max="3000000" name="GiaPhongMax" value="@Model.danhSachCheckPhong.GiaPhongMax">
+                                        }
+                                        else
+                                        {
+                                            <input class="input-max" type="number" value="3000000" min="0" max="3000000" name="GiaPhongMax">
+                                        }
+                                    </p>
+                                    <div class="slider">
+                                        <div class="progress"></div>
+                                    </div>
+                                    <div class="range-input">
+                                         @if (Model.danhSachCheckPhong.GiaPhongMin != 0)
+                                        {
+                                            <input class="range-min" min="0" max="3000000" step="50000"
+                                                   type="range" value="@Model.danhSachCheckPhong.GiaPhongMin">
+                                        }
+                                        else
+                                        {
+                                            <input class="range-min" value="0" min="0" max="3000000" step="50000"
+                                                   type="range">
+                                        }
+                                         @if (Model.danhSachCheckPhong.GiaPhongMax != 0)
+                                        {
+                                            <input class="range-max"  min="0" max="3000000" step="50000"
+                                                   type="range" value="@Model.danhSachCheckPhong.GiaPhongMax">
+                                        }
+                                        else
+                                        {
+                                            <input class="range-max" value="3000000" min="0" max="3000000" step="50000"
+                                                   type="range">
+                                        }
+                                    </div>
+
+                                </div>
+                            </div>
+                            <button class="check-available" style="font-weight:bold" type="submit" id="checkdate-btn">Kiểm Tra</button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Lấy giá trị hiện tại của @Model.danhSachCheckPhong.GioCheckin
+    var gioCheckin = "@Model.danhSachCheckPhong.GioCheckin";
+    var gioCheckout = "@Model.danhSachCheckPhong.GioCheckout"
+    // Chuyển đổi định dạng ngày tháng từ month/day/year sang day/month/year
+    var dateParts = gioCheckin.split('/');
+    var dateParts2 = gioCheckout.split('/');
+    var day = dateParts[1];
+    var day2 = dateParts2[1];
+    var month = dateParts[0];
+    var month2 = dateParts2[0];
+    var year = dateParts[2];
+    var year2 = dateParts2[2];
+    var gioCheckinNewFormat = day + '/' + month + '/' + year;
+    var gioCheckoutNewFormat = day2 + '/' + month2 + '/' + year2;
+
+    // Gán giá trị mới vào thuộc tính value
+    if (gioCheckin !== "01/01/0001 12:00:00 AM") {
+        document.getElementById("hasDatepicker1").value = gioCheckinNewFormat;
+    }
+    if (gioCheckout !== "01/01/0001 12:00:00 AM") {
+        document.getElementById("hasDatepicker2").value = gioCheckoutNewFormat;
+    }
+</script>

@@ -1,0 +1,57 @@
+﻿@model ClientQuanLyKhachSan.Models.ModelViewUser
+@{
+    ViewData["Title"] = "Lich Su Dat Phong";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="room_section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="room_title">
+                    <h2>Lịch sử đặt phòng</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 offset-lg-1">
+                <div class="row">
+                    @foreach (var item in Model.lichSuDatPhongs)
+                    {
+                        <div class="col-md-6 col-lg-4">
+                            <div class="room_item">
+                                <img src="@item.UrlImages" style="aspect-ratio: 1/1; width:100%;" alt="">
+                                <div class="room_details">
+                                    <h3>@item.TenPhong</h3>
+                                    <h2>@item.TongTien.ToString("N0") vnđ</h2>
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td class="r-o">Checkin:</td>
+                                                <td>@item.GioCheckin.ToString("dd/MM/yyyy")</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="r-o">Check-out</td>
+                                                <td>@item.GioCheckout.ToString("dd/MM/yyyy")</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="r-o">Trạng thái:</td>
+                                                <td>@item.TrangThai</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <a href="@Url.Action("LichSuChiTiet", "QuanLyHoaDon", new { id=item.IdHoaDon })" class="primary-btn">Chi tiết</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

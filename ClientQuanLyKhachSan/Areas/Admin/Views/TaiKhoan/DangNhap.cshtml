@@ -1,0 +1,44 @@
+﻿@model ClientQuanLyKhachSan.Models.ModelViewUser
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<link rel="stylesheet" href="/front-end/css/login.css">
+<div class="login" style="background-image: url(/images/login.jpg)">
+    <div class="container">
+        <div class="row">
+            <div class="login-form col-lg-4 offset-lg-4">
+                <h2>Đăng nhập</h2>
+                <form class="form" asp-area="Admin" asp-controller="TaiKhoan" asp-action="DangNhap" method="post">
+                    @if (TempData["error"] != null)
+                    {
+                        <div style="color: red;">@TempData["error"]</div>
+                    }
+
+                    <div class="email-group group">
+                        <label for="email-input">Email</label>
+                        <input type="email" class="form-control" id='email-input' placeholder="Email" name="Email">
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+                    <div class="password-group group">
+                        <label for="password-input">Mật khẩu</label>
+                        <input type="password" class="form-control" id='password-input' placeholder="Mật khẩu" name="Password">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <div class="forgot-btn">
+                        <button><a href="@Url.Action("QuenMatKhau", "TaiKhoan", new { Areas="Admin"})" style="text-decoration: none;color: black;">Quên mật khẩu?</a></button>
+                    </div>
+                    <button type="submit" class="btn">Đăng nhập</button>
+                </form>
+                <div class="sign-up">
+                    <h6>Bạn chưa có tài khoản</h6>
+                    <a href="@Url.Action("DangKy", "TaiKhoan", new { Areas="Admin"})">ĐĂNG KÝ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="~/front-end/js/API.js"></script>

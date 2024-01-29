@@ -1,0 +1,103 @@
+﻿@model ClientQuanLyKhachSan.Models.ModelViewUser
+@{
+    ViewData["Title"] = "Chi Tiet Bai Viet";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/front-end/js/main.js"></script>
+<link rel="stylesheet" href="~/front-end/css/style.css">
+<section class="ftco-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+
+                <div class="col-md-12">
+                    <h2 class="mb-4">@Model.ChiTietBlogs.Tieude</h2>
+                    <div id="carouselExampleIndicators" class="carousel slide carousel-blog-detail">
+                        <div class="carousel-indicators">
+                            @for (int i = 0; i < Model.ChiTietBlogs.UrlImages.Count; i++)
+                            {
+                                if (i == 0)
+                                {
+                                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@i" class="active" aria-current="true" aria-label="Slide @(i+1)">
+                                        <img src="@Model.ChiTietBlogs.UrlImages[i]" alt="">
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@i" aria-current="true" aria-label="Slide @(i+1)">
+                                        <img src="@Model.ChiTietBlogs.UrlImages[i]" alt="">
+                                    </button>
+                                }
+
+                            }
+
+
+                        </div>
+                        <div class="carousel-inner">
+                            @for (int i = 0; i < Model.ChiTietBlogs.UrlImages.Count; i++)
+                            {
+                                @if (i == 0)
+                                {
+                                    <div class="carousel-item carousel-item-detail active">
+                                        <img src="@Model.ChiTietBlogs.UrlImages[i]" class="d-block w-100" alt="...">
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="carousel-item carousel-item-detail">
+                                        <img src="@Model.ChiTietBlogs.UrlImages[i]" class="d-block w-100" alt="...">
+                                    </div>
+                                }
+                            }
+
+
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-12 room-single mt-4 mb-5">
+                    <p>
+                        @Model.ChiTietBlogs.MoTa
+                    </p>
+                </div>
+            </div>
+
+
+
+
+            <div class="col-lg-4">
+                <div class="sidebar-box">
+                    <h3>Có thể bạn quan tâm</h3>
+                    @for (int i = 0; i < 3; i++)
+                    {
+                        <div class="block-21 mb-4 d-flex">
+                            <a class="blog-img mr-4"><img src="@Model.BlogTrangChus[i].UrlImage" alt=""></a>
+                            <div class="text">
+                                <h3 class="heading">
+                                    <a href="@Url.Action("ChiTietBaiViet", "BaiViet", new { Areas="", id=Model.BlogTrangChus[i].IdBlog} )">
+                                        @Model.BlogTrangChus[i].Tieude
+                                    </a>
+                                </h3>
+
+                            </div>
+                        </div>
+                    }
+
+
+                </div>
+
+            </div>
+
+
+
+
+        </div>
+    </div>
+</section>

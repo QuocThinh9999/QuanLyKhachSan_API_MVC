@@ -1,0 +1,53 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model ClientQuanLyKhachSan.Models.ModelViewUser
+@{
+    ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+
+    <link rel="stylesheet" href="~/front-end/css/login.css">
+
+<div class="login" style="background-image: url(/images/login.jpg)">
+    <div class="container">
+        <div class="row">
+            <div class="login-form col-lg-4 offset-lg-4">
+                <h2>Đăng ký</h2>
+
+                <form asp-area="Admin" asp-controller="TaiKhoan" asp-action="DangKy" method="post">
+                    @if (TempData["error"] != null)
+                    {
+                        <div style="color: red;">@TempData["error"]</div>
+                    }
+                    <div class="email-group group">
+                        <label for="email-input">Email</label>
+                        <input type="email" class="form-control" id='email-input' placeholder="Email" name="Email" value="@Model.InputDangKys.Email">
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+                    <div class="email-group group">
+                        <label for="email-input">Tên</label>
+                        <input class="form-control" id='email-input' placeholder="Tên" name="Username" value="@Model.InputDangKys.Username">
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+                    <div class="password-group group" style="margin-bottom: 30px;">
+                        <label for="password-input">Mật khẩu</label>
+                        <input type="password" class="form-control" id='password-input' placeholder="Mật khẩu" name="Password" value="@Model.InputDangKys.Password">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <div class="password-group group">
+                        <label for="password-input">Xác nhận mật khẩu</label>
+                        <input type="password" class="form-control" id='password-input' placeholder="Mật khẩu" name="Password2" value="@Model.InputDangKys.Password2">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <button type="submit" class="btn">Đăng ký</button>
+                    <div class="sign-up">
+                        <h6>Bạn đã có tài khoản</h6>
+                        <a href="@Url.Action("DangNhap", "TaiKhoan", new { Areas="Admin"})">ĐĂNG NHẬP</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="~/front-end/js/API.js"></script>

@@ -1,0 +1,30 @@
+﻿@model ClientQuanLyKhachSan.Models.ModelViewUser
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "Quen mat khau";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="/front-end/css/login.css">
+<div class="login" style="background-image: url(/images/login.jpg)">
+    <div class="container">
+        <div class="row">
+            <div class="login-form col-lg-4 offset-lg-4">
+                <h2>Quên mật khẩu</h2>
+                @if (TempData["error"] != null)
+                {
+                    <div style="color: red;">@TempData["error"]</div>
+                }
+                <p>Để tiếp tục, trước tiên hãy xác định danh tính của bạn:</p>
+                <form asp-area="Admin" asp-controller="TaiKhoan" asp-action="QuenMatKhau" method="post">
+                    <div class="email-group group">
+                        <label for="email-input">Nhập email của bạn:</label>
+                        <input type="email" class="form-control" id='email-input' placeholder="Email" name="email">
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+                    <button type="submit" class="btn">Nhận OTP</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>

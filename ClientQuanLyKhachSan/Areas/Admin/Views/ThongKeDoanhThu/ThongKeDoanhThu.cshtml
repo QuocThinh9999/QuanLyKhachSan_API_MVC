@@ -1,0 +1,218 @@
+﻿@model ClientQuanLyKhachSan.Areas.Admin.Models.ModelViewAdmin
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "thong ke doanh thu";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="dasboard-desciption">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="padding-top" style="height: 62px;"></div>
+                <div class="header-inner">
+                   @*  <form action="
+                            " style="width: 100%;">
+                        <div class="iner-search">
+                            <div class="left" style="display: flex;">
+                                <input type="text" class="form-control" placeholder="Search Here"
+                                       aria-label="Username" aria-describedby="basic-addon1"
+                                       style="box-shadow: none;">
+                                <button type="button" class="btn-search">Tìm kiếm</button>
+                            </div>
+                            <div class="sidebar-btn" id="sidebar-active">
+                                <i class="fa fa-bars"></i>
+                            </div>
+                            <div class="admin-icon">
+                                <i class="fa fa-users"></i>
+                            </div>
+                        </div>
+                    </form> *@
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="slider">
+                <p style="color: #fff; padding-left: 40px;"> Thống kê doanh thu</p>
+            </div>
+            <div class="image">
+                <div class="row">
+                    <div class="col-lg-5">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-7">
+                        <form action="">
+                            <div class="row">
+                                <div class="col-lg-7 col-md-12" style="margin-bottom:20px;">
+                                    <select class="form-select" id="nam" aria-label="Default select example ">
+                                        <option value="2023">2023</option>
+                                        <option selected value="2024">2024</option>
+                                        <option value="2025">2025</option>
+                                        <option value="2026">2026</option>
+                                        <option value="2027">2027</option>
+                                        <option value="2028">2028</option>
+                                        <option value="2029">2029</option>
+                                        <option value="2030">2030</option>
+                                    </select>
+                                </div>
+                                
+                            </div>
+                        </form>
+                       
+                    </div>
+                   
+                    <div>
+                        <div id="columnchart_values1"></div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <form action="">
+                        <div class="row">
+                            <div class=" col-md-12 col-lg-7 " style="margin-bottom:20px;">
+                                <select class="form-select" id="nam2" aria-label="Default select example " >
+                                    <option  value="2023">2023</option>
+                                    <option selected value="2024">2024</option>
+                                    <option value="2025">2025</option>
+                                    <option value="2026">2026</option>
+                                    <option value="2027">2027</option>
+                                    <option value="2028">2028</option>
+                                    <option value="2029">2029</option>
+                                    <option value="2030">2030</option>
+                                </select>
+                                <select class="form-select" id="thang2" aria-label="Default select example " >
+                                    
+                                    <option selected value="1">Tháng 1</option>
+                                    <option value="2">Tháng 2</option>
+                                    <option value="3">Tháng 3</option>
+                                    <option value="4">Tháng 4</option>
+                                    <option value="5">Tháng 5</option>
+                                    <option value="6">Tháng 6</option>
+                                    <option value="7">Tháng 7</option>
+                                    <option value="8">Tháng 8</option>
+                                    <option value="9">Tháng 9</option>
+                                    <option value="10">Tháng 10</option>
+                                    <option value="11">Tháng 11</option>
+                                    <option value="12" >Tháng 12</option>
+                                </select>
+                            </div>
+                           @*  <div class="col-md-12 col-lg-4" style="margin-bottom:20px;">
+                                <button class="total-btn" id="thongkeloaiphong">Xem thống kê phòng</button>
+                            </div> *@
+                        </div>
+                    </form>
+                    <div>
+                        <div id="donutchart"></div>
+                    </div>                      
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load("current", { packages: ["corechart"] });
+    google.charts.setOnLoadCallback(function () {
+        var id = $('#nam').val(); 
+        LoadDataColumnChart(id);
+    });
+    google.charts.setOnLoadCallback(function () {
+        var thang2 = $('#thang2').val();
+        var nam2 = $('#nam2').val();
+        LoadDataPieChart(nam2, thang2);
+
+    });
+
+    function LoadDataColumnChart(id) {
+        $.ajax({
+            url: 'http://localhost:5006/api/ThongKeDoanhThu/thong-ke-doanh-thu?nam=' + id,
+            type: 'POST',
+            success: function (result) {
+                drawColumn1Chart(result);
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+    }
+
+    function drawColumn1Chart(data) {
+        var arr1 = [
+            ["Tháng", "Doanh thu", { role: "style" }]
+        ];
+
+        for (let i = 0; i < data.length; i++) {
+            arr1.push([data[i].thang.toString(), data[i].doanhThuThang, "#b" + data[i].doanhThuThang.toString() + "7100"]);
+        }
+
+        var dataTable = google.visualization.arrayToDataTable(arr1);
+        var view = new google.visualization.DataView(dataTable);
+        view.setColumns([0, 1,
+            {
+                calc: "stringify",
+                sourceColumn: 1,
+                type: "string",
+                role: "annotation"
+            },
+            2]);
+
+        var options = {
+            title: "Doanh thu theo tháng",
+            width: 1000,
+            height: 600,
+            bar: { groupWidth: "100%" },
+            legend: { position: "none" },
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values1"));
+        chart.draw(view, options);
+    }
+    $(document).ready(function () {
+        LoadDataColumnChart($('#nam').val());
+        setInterval(function () {
+            LoadDataColumnChart($('#nam').val());
+        },1000);
+    });
+
+    function LoadDataPieChart(nam2, thang2) {
+        $.ajax({
+            url: 'http://localhost:5006/api/ThongKeDoanhThu/thong-ke-loai-phong',
+            type: 'POST',
+            data: {
+                thang: thang2,
+                nam: nam2
+            },
+            success: function (result) {
+                drawPieChart(result);
+            },
+            error: function (err) {
+                console.log('loi goi APi');
+            }
+        });
+    }
+    function drawPieChart(data) {
+       
+        var arr = [
+            ['tenPhong', 'soLuong']
+        ];
+        for (let i = 0; i < data.length; i++) {
+            arr.push([data[i].tenPhong, parseFloat(data[i].soLuong)]);
+        }
+        var dataTable = google.visualization.arrayToDataTable(arr); 
+        var options = {
+            title: 'Thống kê số lượng đặt phòng',
+            pieHole: 0.4,
+            width: 800,
+            height: 600,
+        };
+        var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+        chart.draw(dataTable, options); 
+    }
+    $(document).ready(function () {
+        LoadDataPieChart( $('#nam2').val(), $('#thang2').val());
+        setInterval(function () {
+            LoadDataPieChart($('#nam2').val(), $('#thang2').val());
+        },1000);
+    });
+   
+</script>

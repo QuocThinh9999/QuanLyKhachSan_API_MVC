@@ -1,0 +1,377 @@
+﻿@model ClientQuanLyKhachSan.Models.ModelViewUser
+@{
+    ViewData["Title"] = "Chi Tiet Phong";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if (Model.nkkd.Any())
+{
+    <script>
+
+
+
+        $(function () {
+            var selectedDate = null;
+            $("#hasDatepicker1").datepicker({
+                beforeShowDay: function (date) {
+                    var today = new Date();
+                    today.setHours(0, 0, 0, 0);
+
+                    if (date.getTime() < today.getTime()) {
+                        return [false, 'disabled-day', 'Ngày không khả dụng'];
+                    }
+
+                    var disabledDates = [
+                        // Các phần tử trong danh sách nkkd sẽ được thêm vào đây
+                    ];
+
+                    // Duyệt qua danh sách nkkd và thêm các ngày không khả dụng vào disabledDates
+        @foreach (var nkkd in Model.nkkd)
+        {
+            <text>
+                                var nkkdDate = new Date(@nkkd.Year, @nkkd.Month - 1, @nkkd.Day);
+                        disabledDates.push(nkkdDate);
+            </text>
+        }
+
+                    if (disabledDates.some(disabledDate => isDateDisabled(date, disabledDate))) {
+                        return [false, 'disabled-day', 'Ngày không khả dụng'];
+                    }
+                    return [true];
+                },
+                onSelect: function (dateText, inst) {
+                    $("#hasDatepicker2").val('');
+                    selectedDate = $("#hasDatepicker1").datepicker('getDate');
+                    $("#hasDatepicker2").datepicker('option', 'beforeShowDay', function (date) {
+                        if ((selectedDate && date.getTime() < (selectedDate.getTime() + 1))  ) {
+                            return [false, 'disabled-day', 'Ngày không khả dụng'];
+                        }
+
+                        var today = new Date();
+                        today.setHours(0, 0, 0, 0);
+
+                        if (date.getTime() < today.getTime()) {
+                            return [false, 'disabled-day', 'Ngày không khả dụng'];
+                        }
+
+                        var disabledDates = [
+                            // Các phần tử trong danh sách nkkd sẽ được thêm vào đây
+                        ];
+
+                        // Duyệt qua danh sách nkkd và thêm các ngày không khả dụng vào disabledDates
+        @foreach (var nkkd in Model.nkkd)
+        {
+            <text>
+                            var nkkdDate = new Date(@nkkd.Year, @nkkd.Month - 1, @nkkd.Day);
+                            disabledDates.push(nkkdDate);
+            </text>
+        }
+
+                if (selectedDate && date.getTime() < selectedDate.getTime()) {
+                            return [false, 'disabled-day', 'Ngày không khả dụng'];
+                        }
+                        // Tìm ngày sớm nhất trong disabledDates sau selectedDate
+                        var earliestDisabledDate = null;
+
+                        for (var i = 0; i < disabledDates.length; i++) {
+                            var disabledDate = disabledDates[i];
+
+                            if (disabledDate > selectedDate && (!earliestDisabledDate || disabledDate < earliestDisabledDate)) {
+                                earliestDisabledDate = disabledDate;
+                            }
+                        }
+                        // Kiểm tra xem ngày đang xét có nằm sau ngày sớm nhất không
+                        if (earliestDisabledDate && date.getTime() > earliestDisabledDate.getTime()  && selectedDate && selectedDate.getTime() < earliestDisabledDate.getTime() - 1) {
+                            return [false, 'disabled-day', 'Ngày không khả dụng'];
+                        }
+
+                        return [true];
+                    });
+                }
+            });
+            $("#hasDatepicker2").datepicker({
+                beforeShowDay: function (date) {
+                    var today = new Date();
+                    today.setHours(0, 0, 0, 0);
+
+                    if ($("#hasDatepicker1").datepicker('getDate').GetFullYear != 1) {
+                        return [false]
+                    }
+
+                    if (date.getTime() < today.getTime()) {
+                        return [false, 'disabled-day', 'Ngày không khả dụng'];
+                    }
+
+                    var disabledDates = [
+                        // Các phần tử trong danh sách nkkd sẽ được thêm vào đây
+                    ];
+
+                    // Duyệt qua danh sách nkkd và thêm các ngày không khả dụng vào disabledDates
+        @foreach (var nkkd in Model.nkkd)
+        {
+            <text>
+                                var nkkdDate = new Date(@nkkd.Year, @nkkd.Month - 1, @nkkd.Day);
+                        disabledDates.push(nkkdDate);
+            </text>
+        }
+
+                    if (selectedDate && date.getTime() < selectedDate.getTime() + 1) {
+                        return [false, 'disabled-day', 'Ngày không khả dụng'];
+                    }
+                    // Kiểm tra xem ngày đang xét có nằm trong disabledDates không
+                    var isDisabled = disabledDates.some(function (disabledDate) {
+                        return isDateDisabled(date, disabledDate);
+                    });
+
+                    if (isDisabled) {
+                        return [false, 'disabled-day', 'Ngày không khả dụng'];
+                    }
+
+                    return [true];
+                }
+                
+            });
+
+            function isDateDisabled(date, disabledDate) {
+                return (
+                    date.getFullYear() === disabledDate.getFullYear() &&
+                    date.getMonth() === disabledDate.getMonth() &&
+                    date.getDate() === disabledDate.getDate()
+                );
+            }
+        });
+    </script>
+}
+else
+{
+    <script>
+        $(function () {
+            var selectedDate = null;
+
+            $("#hasDatepicker1").datepicker({
+                beforeShowDay: function (date) {
+                    var today = new Date(); // Lấy ngày hôm nay
+                    today.setHours(0, 0, 0, 0); // Đặt giờ thành 00:00:00 để bỏ qua phần giờ trong so sánh
+
+                    // Đặt ngày hiện tại thành không khả dụng
+                    if (date.getTime() < today.getTime()) {
+                        return [false, 'disabled-day', 'Ngày không khả dụng'];
+                    }
+                    return [true];
+                },
+                onSelect: function (dateText, inst) {
+                    $("#hasDatepicker2").val('');
+                    selectedDate = $(this).datepicker('getDate');
+                    $("#hasDatepicker2").datepicker('option', 'beforeShowDay', function (date) {
+                        // Đặt ngày đã chọn từ hasDatepicker1 thành không khả dụng
+                        if (selectedDate && date.getTime() < selectedDate.getTime() + 1) {
+                            return [false, 'disabled-day', 'Ngày không khả dụng'];
+                        }
+                        return [true];
+                    });
+                }
+            });
+
+            $("#hasDatepicker2").datepicker({
+                beforeShowDay: function (date) {
+                    var today = new Date(); // Lấy ngày hôm nay
+                    today.setHours(0, 0, 0, 0); // Đặt giờ thành 00:00:00 để bỏ qua phần giờ trong so sánh
+
+                    // Đặt ngày hiện tại thành không khả dụng
+                    if (date.getTime() < today.getTime()) {
+                        return [false, 'disabled-day', 'Ngày không khả dụng'];
+                    }
+                    // Đặt ngày đã chọn từ hasDatepicker1 thành không khả dụng
+                    if (selectedDate && date.getTime() < selectedDate.getTime() + 1) {
+                        return [false, 'disabled-day', 'Ngày không khả dụng'];
+                    }
+                    return [true];
+                }
+            });
+        });
+    </script>
+}
+
+<style>
+    .disabled-day {
+        color: #FFFFFF !important;
+        cursor: default !important;
+    }
+</style>
+<script src="~/front-end/js/main.js"></script>
+<link rel="stylesheet" href="~/front-end/css/style.css">
+<section class="ftco-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2 class="mb-4">@Model.ChiTietTrangPhongs.TenPhong</h2>
+                        <div id="carouselExampleIndicators" class="carousel carousel-room-detail slide">
+                            <div class="carousel-indicators">
+                                @for (int i = 0; i < Model.ChiTietTrangPhongs.UrlImages.Count; i++)
+                                {
+                                    if (i == 0)
+                                    {
+                                        <button class="active"
+                                                type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active">
+                                            <img src="@Model.ChiTietTrangPhongs.UrlImages[0]" alt="">
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" data-bs-target="#carouselExampleIndicators"
+                                                data-bs-slide-to="@i">
+
+                                            <img src="@Model.ChiTietTrangPhongs.UrlImages[i]" alt="">
+                                        </button>
+                                    }
+
+                                }
+
+                            </div>
+                            <div class="carousel-inner">
+                                @for (int i = 0; i < Model.ChiTietTrangPhongs.UrlImages.Count; i++)
+                                {
+                                    if (i == 0)
+                                    {
+                                        <div class="carousel-item carousel-item-detail active">
+
+                                            <img src="@Model.ChiTietTrangPhongs.UrlImages[0]" class="d-block w-100" alt="...">
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="carousel-item carousel-item-detail">
+
+                                            <img src="@Model.ChiTietTrangPhongs.UrlImages[i]" class="d-block w-100" alt="...">
+                                        </div>
+                                    }
+
+                                }
+
+
+
+                            </div>
+                            <button class="carousel-control-prev" type="button"
+                                    data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button"
+                                    data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 room-single mt-4 mb-5">
+                        @if (@Model.ChiTietTrangPhongs.GiaSauGiam == @Model.ChiTietTrangPhongs.GiaPhong)
+                        {
+                            <h2><span>Giá 1 ngày:</span> @Model.ChiTietTrangPhongs.GiaPhong.ToString("N0") vnđ</h2>
+                        }
+                        else
+                        {
+
+                            <h2><span>Giá 1 ngày:</span> @Model.ChiTietTrangPhongs.GiaSauGiam.ToString("N0") <del> @Model.ChiTietTrangPhongs.GiaPhong.ToString("N0") vnđ </del></h2>
+                        }
+
+                        <div class="d-md-flex mt-5 mb-5">
+                            <ul class="list">
+                            </ul>
+                            <ul class="list">
+                                <li><span>Số người lớn:</span>@Model.ChiTietTrangPhongs.SoNguoiLon</li>
+                                <li><span>Số trẻ em:</span>@Model.ChiTietTrangPhongs.SoTreEm</li>
+                                <li><span>Diện tích:</span>@Model.ChiTietTrangPhongs.DienTich m²</li>
+                            </ul>
+                            <ul class="list ml-md-5">
+                            </ul>
+                        </div>
+                        <p>
+                            @Model.ChiTietTrangPhongs.MoTa
+                        </p>
+                    </div>
+                    <div class="col-md-12 room-single mb-5 mt-5">
+                        <h4 class="mb-4">Một số phòng khác</h4>
+                        <div class="row">
+                            @for (int i = 0; i < 2; i++)
+                            {
+                                <div class="col-sm col-md-6">
+                                    <div class="room">
+                                        <a href="@Url.Action("ChiTietPhong", "Phong", new { Areas="", id=Model.PhongTrangChus[i].IdPhong} )"
+                                           class="img img-2 d-flex justify-content-center align-items-center"
+                                           style="background-image: url(@Model.PhongTrangChus[i].UrlImage);">
+                                            <img src="@Model.PhongTrangChus[i].UrlImage" alt=""
+                                                 class="img img-2 d-flex justify-content-center align-items-center">
+                                            <div class="icon d-flex justify-content-center align-items-center">
+                                                <span class="icon-search2"></span>
+                                            </div>
+                                        </a>
+                                        <div class="text p-3 text-center">
+                                            <h3 class="mb-3"><a href="@Url.Action("ChiTietPhong", "Phong", new { Areas="", id=Model.PhongTrangChus[i].IdPhong} )">@Model.PhongTrangChus[i].TenPhong</a></h3>
+                                            <p>
+                                                @if (Model.PhongTrangChus[i].GiaSauGiam != Model.PhongTrangChus[i].GiaPhong)
+                                                {
+                                                    <span class="price mr-2">@Model.PhongTrangChus[i].GiaSauGiam.ToString("N0") <del>@Model.PhongTrangChus[i].GiaPhong.ToString("N0")</del></span> <span class="per"> một ngày</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="price mr-2">@Model.PhongTrangChus[i].GiaPhong.ToString("N0")</span> <span class="per"> một ngày</span>
+                                                }
+                                            </p>
+                                            <hr>
+                                            <p class="pt-1">
+                                                <a href="@Url.Action("ChiTietPhong", "Phong", new { Areas="", id=Model.PhongTrangChus[i].IdPhong} )" class="btn-custom">
+                                                    Chi tiết hơn <span class="icon-long-arrow-right"></span>
+                                                </a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!-- .col-md-8 -->
+            <div class="col-lg-4 sidebar">
+                <div class="sidebar-box">
+                    <div class="booking_form-room-detail">
+                        <h2>
+                            Đặt phòng ngay
+                        </h2>
+                        <form asp-area="" asp-controller="QuanLyHoaDon" asp-action="MauHoaDon" method="post" enctype="multipart/form-data">
+                            <div class="check-date">
+                                <p>Check In:</p>
+                                <div class="check">
+                                    <input name="IdPhong" value="@Model.ChiTietTrangPhongs.id" hidden>
+                                    <input type="text" class="date-input" id="hasDatepicker1" name="GioCheckin" readonly>
+                                    <div class="icon-room-detail"><i class="fa-solid fa-calendar-week"></i></div>
+
+                                </div>
+                            </div>
+                            <div class="check-date">
+                                <p>Check Out:</p>
+                                <div class="check">
+                                    <input type="text" class="date-input" id="hasDatepicker2" name="GioCheckout" readonly>
+                                    <div class="icon-room-detail"><i class="fa-solid fa-calendar-week"></i></div>
+                                </div>
+                                @if (TempData["error"] != null)
+                                {
+                                    <div style="color: red;">@TempData["error"]</div>
+                                }
+
+                            </div>
+                            <button class="check-available" type="submit" id="checkdate-btn">Đặt ngay</button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>

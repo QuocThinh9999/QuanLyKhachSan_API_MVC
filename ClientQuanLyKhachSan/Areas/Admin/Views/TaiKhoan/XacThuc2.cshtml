@@ -1,0 +1,33 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model ClientQuanLyKhachSan.Models.ModelViewUser
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+
+<link rel="stylesheet" href="~/front-end/css/login.css">
+
+<div class="login" style="background-image: url(/images/login.jpg)">
+    <div class="container">
+        <div class="row">
+            <div class="login-form col-lg-4 offset-lg-4">
+                <h2>Nhập OTP</h2>
+                @if (TempData["error"] != null)
+                {
+                    <div style="color: red;">@TempData["error"]</div>
+                }
+                <p>Vui lòng nhập mã xác nhận vừa được gửi đến Email:</p>
+                <form asp-area="Admin" asp-controller="TaiKhoan" asp-action="XacThuc2" method="post">
+                    <div class="email-group group">
+                        <label for="email-input">Nhập OTP của bạn:</label>
+                        <input type="text" name="IdNguoiDung" value="@Model.inputOTP.IdNguoiDung" aria-describedby="text" hidden>
+                        <input type="text" class="form-control" id='email-input' placeholder="Mã OTP" name="MaXacThuc">
+                        <i class="fa fa-code"></i>
+                    </div>
+                    <button type="submit" class="btn">Tiếp tục</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
